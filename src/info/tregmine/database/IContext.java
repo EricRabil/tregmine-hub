@@ -21,5 +21,7 @@ public interface IContext extends AutoCloseable {
 	public ITradeDAO getTradeDAO();
 
 	public IWalletDAO getWalletDAO();
+	
+	public ILogDAO getLogDAO();
 
 }

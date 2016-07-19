@@ -1,7 +1,5 @@
 package info.tregmine;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -37,7 +35,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import com.maxmind.geoip.LookupService;
-import com.scarsz.discordsrv.DiscordSRV;
 
 import info.tregmine.api.BlockStats;
 import info.tregmine.api.FishyBlock;
@@ -138,23 +135,15 @@ import info.tregmine.commands.WebKickCommand;
 import info.tregmine.commands.WhoCommand;
 import info.tregmine.commands.ZoneCommand;
 import info.tregmine.database.DAOException;
-import info.tregmine.database.IBlessedBlockDAO;
-import info.tregmine.database.IBlockDAO;
 import info.tregmine.database.IContext;
 import info.tregmine.database.IContextFactory;
-import info.tregmine.database.IFishyBlockDAO;
-import info.tregmine.database.ILogDAO;
 import info.tregmine.database.IMiscDAO;
 import info.tregmine.database.IPlayerDAO;
 import info.tregmine.database.IPlayerReportDAO;
-import info.tregmine.database.IZonesDAO;
 import info.tregmine.database.db.DBContextFactory;
 import info.tregmine.events.CallEventListener;
 import info.tregmine.events.TregmineChatEvent;
-import info.tregmine.listeners.AchievementListener;
 import info.tregmine.listeners.AfkListener;
-import info.tregmine.listeners.BankListener;
-import info.tregmine.listeners.BlessedBlockListener;
 import info.tregmine.listeners.BoxFillBlockListener;
 import info.tregmine.listeners.ChatListener;
 import info.tregmine.listeners.ChunkListener;
@@ -189,9 +178,6 @@ import info.tregmine.tools.ToolCraftRegistry;
 import info.tregmine.tools.ToolRepairCommand;
 import info.tregmine.tools.ToolSpawnCommand;
 import info.tregmine.tools.VeinListener;
-import info.tregmine.zones.Lot;
-import info.tregmine.zones.Zone;
-import info.tregmine.zones.ZoneWorld;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -218,9 +204,6 @@ public class Tregmine extends JavaPlugin {
 	private Map<Location, Integer> blessedBlocks;
 	private Map<Location, FishyBlock> fishyBlocks;
 	private Map<Material, Integer> minedBlockPrices;
-
-	private Map<String, ZoneWorld> worlds;
-	private Map<Integer, Zone> zones;
 
 	private List<String> insults;
 	private List<String> quitMessages;
@@ -254,8 +237,6 @@ public class Tregmine extends JavaPlugin {
 	private int onlineJuniors = 0;
 	private int onlineSeniors = 0;
 	private int onlineTeachers = 0;
-
-	private DiscordSRV dsv;
 
 	private Lag lag = new Lag();
 

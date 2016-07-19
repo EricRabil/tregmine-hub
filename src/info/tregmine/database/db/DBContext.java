@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import info.tregmine.Tregmine;
 import info.tregmine.database.IContext;
 import info.tregmine.database.IHandbookDAO;
+import info.tregmine.database.ILogDAO;
 import info.tregmine.database.IMailDAO;
 import info.tregmine.database.IMiscDAO;
 import info.tregmine.database.IMotdDAO;
@@ -43,6 +44,11 @@ public class DBContext implements IContext {
 	@Override
 	public IMailDAO getMailDAO() {
 		return new DBMailDAO(conn, this.plugin);
+	}
+	
+	@Override
+	public ILogDAO getLogDAO(){
+		return new DBLogDAO(conn);
 	}
 
 	@Override

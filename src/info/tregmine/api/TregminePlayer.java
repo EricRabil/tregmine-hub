@@ -29,15 +29,6 @@ import org.bukkit.permissions.PermissionAttachment;
 
 import info.tregmine.Tregmine;
 import info.tregmine.api.encryption.BCrypt;
-import info.tregmine.api.returns.BooleanStringReturn;
-import info.tregmine.database.DAOException;
-import info.tregmine.database.IContext;
-import info.tregmine.database.IInventoryDAO;
-import info.tregmine.database.IPlayerDAO;
-import info.tregmine.quadtree.Point;
-import info.tregmine.zones.Lot;
-import info.tregmine.zones.Zone;
-import info.tregmine.zones.ZoneWorld;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -86,7 +77,6 @@ public class TregminePlayer extends PlayerDelegate {
 
 	// One-time state
 	private String chatChannel = "GLOBAL";
-	private Zone currentZone = null;
 	private GuardianState guardianState = GuardianState.QUEUED;
 	private int blessTarget = 0;
 	private ChatState chatState = ChatState.CHAT;
@@ -198,73 +188,6 @@ public class TregminePlayer extends PlayerDelegate {
 			sendStringMessage(ChatColor.GOLD + "Congratulations! You've been awarded " + "the level " + ChatColor.GREEN
 					+ badgeLevel + " " + ChatColor.GOLD + badge.getName() + "badge of honor: " + message);
 		}
-	}
-
-	public BooleanStringReturn canBeHere(Location loc) {
-		ZoneWorld world = plugin.getWorld(loc.getWorld());
-		Zone zone = world.findZone(loc);
-		Lot lot = world.findLot(loc);
-
-		if (zone == null) { // Wilderness - Can be there
-			return new BooleanStringReturn(true, null);
-		}
-
-		if (this.getRank().canModifyZones()) { // Admins can be there
-			return new BooleanStringReturn(true, null);
-		}
-
-		Zone.Permission permission = zone.getUser(this);
-
-		if (zone.getEnterDefault()) {
-			// Banned - Can not be there
-			if (permission != null && permission == Zone.Permission.Banned) {
-				return new BooleanStringReturn(false,
-						ChatColor.RED + "[" + zone.getName() + "] You are banned from " + zone.getName());
-			}
-
-			// If zone has BlockWarned and user is warned
-			if (zone.hasFlag(Zone.Flags.BLOCK_WARNED) && (this.hasFlag(TregminePlayer.Flags.HARDWARNED)
-					|| this.hasFlag(TregminePlayer.Flags.SOFTWARNED))) {
-				return new BooleanStringReturn(false,
-						ChatColor.RED + "[" + zone.getName() + "] You must not be warned to be here!");
-			}
-
-			// If zone has Admin Only and user is not admin
-			if (zone.hasFlag(Zone.Flags.ADMIN_ONLY)
-					&& (this.getRank() != Rank.JUNIOR_ADMIN || this.getRank() != Rank.SENIOR_ADMIN)) {
-				return new BooleanStringReturn(false,
-						ChatColor.RED + "[" + zone.getName() + "] You must be an admin to enter " + zone.getName());
-			}
-
-			// If zone has Require Residency and user is not resident yet
-			if (zone.hasFlag(Zone.Flags.REQUIRE_RESIDENCY) && (this.getRank() == Rank.UNVERIFIED
-					|| this.getRank() == Rank.TOURIST || this.getRank() == Rank.SETTLER)) {
-				return new BooleanStringReturn(false, ChatColor.RED + "[" + zone.getName() + "] You must be atleast "
-						+ plugin.getRankColor(Rank.RESIDENT) + "Resident" + ChatColor.RED + zone.getName());
-			}
-		} else {
-			// If no permission (Allowed, Maker, Owner, Banned) then stop
-			if (permission == null) {
-				return new BooleanStringReturn(false,
-						ChatColor.RED + "[" + zone.getName() + "] You are not allowed to enter " + zone.getName());
-			}
-
-			// If the permission is banned then stop
-			if (permission == Zone.Permission.Banned) {
-				return new BooleanStringReturn(false,
-						ChatColor.RED + "[" + zone.getName() + "] You are banned from " + zone.getName());
-			}
-		}
-
-		// If private lot
-		if (lot != null && lot.hasFlag(Lot.Flags.PRIVATE)) {
-			// If not owner - then stop
-			if (!lot.isOwner(this)) {
-				return new BooleanStringReturn(false, ChatColor.RED + "[" + zone.getName() + "] This lot is private!");
-			}
-		}
-
-		return new BooleanStringReturn(true, null);
 	}
 
 	public boolean canMentor() {
@@ -441,10 +364,6 @@ public class TregminePlayer extends PlayerDelegate {
 
 	public String getCurrentInventory() {
 		return currentInventory;
-	}
-
-	public Zone getCurrentZone() {
-		return currentZone;
 	}
 
 	public Block getFillBlock1() {
@@ -656,114 +575,6 @@ public class TregminePlayer extends PlayerDelegate {
 		return badges.containsKey(badge);
 	}
 
-	/**
-	 * Returns true or false if the player has permission for that block
-	 * 
-	 * @param loc
-	 *            - Location of the block in question
-	 * @param punish
-	 *            - Should it return an error message and set fire ticks
-	 * @return true or false
-	 */
-	public boolean hasBlockPermission(Location loc, boolean punish) {
-		ZoneWorld world = plugin.getWorld(loc.getWorld());
-		Point point = new Point(loc.getBlockX(), loc.getBlockZ());
-
-		Zone zone = world.findZone(point);
-		Lot lot = world.findLot(point);
-
-		Zone currentZone = this.getCurrentZone();
-		if (currentZone == null || !currentZone.contains(point)) {
-			currentZone = world.findZone(point);
-			this.setCurrentZone(currentZone);
-		}
-
-		if (this.hasFlag(TregminePlayer.Flags.HARDWARNED)) {
-			if (punish == true) {
-				this.setFireTicks(100);
-				this.sendStringMessage(ChatColor.RED + "[" + zone.getName() + "] " + "You are hardwarned!");
-			}
-			return false;
-		}
-
-		if (this.getRank() == Rank.TOURIST) {
-			return false;
-			// Don't punish as that's just cruel ;p
-		}
-
-		if (zone == null) { // Is in the wilderness - So return true
-			return true;
-		}
-
-		if (this.getRank().canModifyZones()) { // Lets people with
-												// canModifyZones have block
-												// permission
-			return true;
-		}
-
-		Zone.Permission perm = zone.getUser(this);
-
-		if (perm == Zone.Permission.Banned) { // If banned then return false
-			if (punish == true) {
-				this.setFireTicks(100);
-				this.sendStringMessage(ChatColor.RED + "[" + zone.getName() + "] " + "You are banned from this zone!");
-			}
-			return false;
-		}
-
-		if (lot == null && (perm == Zone.Permission.Maker || perm == Zone.Permission.Owner)) { // If
-																								// allowed/maker/owner
-																								// and
-																								// not
-																								// in
-																								// a
-																								// lot
-																								// :
-																								// return
-																								// true
-			return true;
-		}
-
-		if (lot == null && zone.getPlaceDefault()) { // If placeDefault and not
-														// in a lot : return
-														// true
-			return true;
-		}
-
-		if (lot != null && perm == Zone.Permission.Owner && zone.isCommunist()) { // If
-																					// communist
-																					// zone
-																					// return
-																					// true
-			return true;
-		}
-
-		if (lot != null && lot.isOwner(this)) { // If is lot owner
-			return true;
-		}
-
-		if (lot != null && lot.hasFlag(Lot.Flags.FREE_BUILD)) {
-			return true;
-		}
-
-		if (punish == true) {
-			if (lot != null && zone != null) { // Lot Error Message
-
-				this.setFireTicks(100);
-				this.sendStringMessage(ChatColor.RED + "[" + currentZone.getName() + "] "
-						+ "You do not have sufficient permissions in " + lot.getName() + ".");
-
-			} else { // Zone Error Message
-
-				this.setFireTicks(100);
-				this.sendStringMessage(ChatColor.RED + "[" + currentZone.getName() + "] "
-						+ "You do not have sufficient permissions in " + zone.getName() + ".");
-
-			}
-		}
-
-		return false; // If they don't fit into any of that. Return false
-	}
 
 	public boolean hasFlag(Flags flag) {
 		return flags.contains(flag);
@@ -823,88 +634,6 @@ public class TregminePlayer extends PlayerDelegate {
 		return valid;
 	}
 
-	/*
-	 * Load an already existing inventory
-	 * 
-	 * @param name - Name of the inventory
-	 * 
-	 * @param save - Same current inventory
-	 */
-	public void loadInventory(String name, boolean save) {
-		try (IContext ctx = plugin.createContext()) {
-			IInventoryDAO dao = ctx.getInventoryDAO();
-
-			if (save) {
-				this.saveInventory(currentInventory);
-			}
-
-			boolean firstTime = false;
-
-			int id3;
-			id3 = dao.fetchInventory(this, name, "main");
-			while (id3 == -1) {
-				dao.createInventory(this, name, "main");
-				plugin.getLogger().info("INVENTORY: Creating");
-				id3 = dao.fetchInventory(this, name, "main");
-				firstTime = true;
-			}
-
-			int id4;
-			id4 = dao.fetchInventory(this, name, "armour");
-			while (id4 == -1) {
-				dao.createInventory(this, name, "armour");
-				plugin.getLogger().info("INVENTORY: Creating");
-				id4 = dao.fetchInventory(this, name, "armour");
-				firstTime = true;
-			}
-
-			int id5;
-			id5 = dao.fetchInventory(this, name, "ender");
-			while (id5 == -1) {
-				dao.createInventory(this, name, "ender");
-				plugin.getLogger().info("INVENTORY: Creating");
-				id5 = dao.fetchInventory(this, name, "ender");
-				firstTime = true;
-			}
-
-			if (firstTime) {
-				this.saveInventory(name);
-			}
-
-			this.getInventory().clear();
-			this.getInventory().setHelmet(null);
-			this.getInventory().setChestplate(null);
-			this.getInventory().setLeggings(null);
-			this.getInventory().setBoots(null);
-			this.getEnderChest().clear();
-
-			dao.loadInventory(this, id3, "main");
-			dao.loadInventory(this, id4, "armour");
-			dao.loadInventory(this, id5, "ender");
-
-			this.currentInventory = name;
-
-			IPlayerDAO playerDAO = ctx.getPlayerDAO();
-			playerDAO.updatePlayer(this);
-
-		} catch (DAOException e) {
-			plugin.getLogger().info("INVENTORY ERROR: Trying to load " + this.getName() + " inventory named: " + name);
-			throw new RuntimeException(e);
-		}
-	}
-
-	public ChatColor RankColor() {
-		// Gives admins, guardians a chat color
-		if (rank == Rank.GUARDIAN) {
-			return ChatColor.GREEN;
-		} else if (rank == Rank.JUNIOR_ADMIN || rank == Rank.SENIOR_ADMIN) {
-			return ChatColor.GOLD;
-		} else {
-			return ChatColor.GRAY;
-		}
-
-	}
-
 	public void removeFlag(Flags flag) {
 		flags.remove(flag);
 	}
@@ -915,55 +644,6 @@ public class TregminePlayer extends PlayerDelegate {
 
 	public void resetTimeOnline() {
 		loginTime = new Date();
-	}
-
-	/*
-	 * Save the inventory specified, if null - saves current inventory.
-	 * 
-	 * @param name - Name of the new inventory
-	 */
-	public void saveInventory(String name) {
-		String inventory = name;
-		if (name == null) {
-			inventory = this.currentInventory;
-		}
-
-		try (IContext ctx = plugin.createContext()) {
-			IInventoryDAO dao = ctx.getInventoryDAO();
-
-			int id;
-			id = dao.fetchInventory(this, inventory, "main");
-			while (id == -1) {
-				dao.createInventory(this, inventory, "main");
-				plugin.getLogger().info("INVENTORY: Creating");
-				id = dao.fetchInventory(this, inventory, "main");
-			}
-
-			dao.saveInventory(this, id, "main");
-
-			int id2;
-			id2 = dao.fetchInventory(this, inventory, "armour");
-			while (id2 == -1) {
-				dao.createInventory(this, inventory, "armour");
-				plugin.getLogger().info("INVENTORY: Creating");
-				id2 = dao.fetchInventory(this, inventory, "armour");
-			}
-
-			dao.saveInventory(this, id2, "armour");
-
-			int id3;
-			id3 = dao.fetchInventory(this, inventory, "ender");
-			while (id3 == -1) {
-				dao.createInventory(this, inventory, "ender");
-				plugin.getLogger().info("INVENTORY: Creating");
-				id3 = dao.fetchInventory(this, inventory, "ender");
-			}
-
-			dao.saveInventory(this, id3, "ender");
-		} catch (DAOException e) {
-			plugin.getLogger().info("INVENTORY ERROR: Trying to save " + this.getName() + " inventory named: " + name);
-			throw new RuntimeException(e);
-		}
 	}
 
 	public void sendNotification(Notification notif) {
@@ -1100,10 +780,6 @@ public class TregminePlayer extends PlayerDelegate {
 		 * if (!url.equals(this.texture)) { this.texture = url;
 		 * setTexturePack(url); }
 		 */
-	}
-
-	public void setCurrentZone(Zone zone) {
-		this.currentZone = zone;
 	}
 
 	public void setCurseWarned(boolean a) {
@@ -1319,7 +995,7 @@ public class TregminePlayer extends PlayerDelegate {
 	public void showPlayer(TregminePlayer player) {
 		showPlayer(player.getDelegate());
 	}
-
+	
 	public void teleportWithHorse(Location loc) {
 		World cWorld = loc.getWorld();
 		String[] worldNamePortions = cWorld.getName().split("_");
@@ -1339,25 +1015,6 @@ public class TregminePlayer extends PlayerDelegate {
 		} else {
 			teleport(loc);
 		}
-
-		if (worldNamePortions[0].equalsIgnoreCase("world")) {
-			this.loadInventory("survival", true);
-		} else {
-			this.loadInventory(worldNamePortions[0], true);
-		}
-	}
-
-	public Zone updateCurrentZone() {
-		Point pos = new Point(this.getLocation().getBlockX(), this.getLocation().getBlockZ());
-		Zone localZone = this.getCurrentZone();
-
-		if (localZone == null || !localZone.contains(pos)) {
-			ZoneWorld world = plugin.getWorld(this.getLocation().getWorld());
-			localZone = world.findZone(pos);
-			this.setCurrentZone(localZone);
-		}
-
-		return currentZone;
 	}
 
 	public boolean verifyPassword(String attempt) {

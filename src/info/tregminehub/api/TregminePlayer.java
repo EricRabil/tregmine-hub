@@ -65,9 +65,7 @@ public class TregminePlayer extends PlayerDelegate {
 	private int guardianRank = 0;
 	private int playTime = 0;
 	private Set<Flags> flags;
-	private Set<CommandStatus> commandstatus;
 	private Set<Property> properties;
-	private Map<Badge, Integer> badges;
 	private Location lastpos = null;
 
 	// Discord values
@@ -110,20 +108,9 @@ public class TregminePlayer extends PlayerDelegate {
 	private Block fillBlock2 = null;
 	private int fillBlockCounter = 0;
 
-	// Player state for zone creation
-	private Block zoneBlock1 = null;
-	private Block zoneBlock2 = null;
-	private int zoneBlockCounter = 0;
-	private int targetZoneId = 0;
-
 	// Player state for activity
 	private boolean afk = false;
 	private boolean isFrozen = false;
-
-	// Fishy Block state
-	private FishyBlock newFishyBlock;
-	private FishyBlock currentFishyBlock;
-	private int fishyBuyCount;
 
 	// Chunk Watcher
 	private boolean newChunk = false;
@@ -149,9 +136,7 @@ public class TregminePlayer extends PlayerDelegate {
 		this.loginTime = new Date();
 
 		this.flags = EnumSet.noneOf(Flags.class);
-		this.commandstatus = EnumSet.noneOf(CommandStatus.class);
 		this.properties = EnumSet.noneOf(Property.class);
-		this.badges = new EnumMap<Badge, Integer>(Badge.class);
 		this.plugin = instance;
 	}
 
@@ -163,9 +148,7 @@ public class TregminePlayer extends PlayerDelegate {
 		this.loginTime = new Date();
 
 		this.flags = EnumSet.noneOf(Flags.class);
-		this.commandstatus = EnumSet.noneOf(CommandStatus.class);
 		this.properties = EnumSet.noneOf(Property.class);
-		this.badges = new EnumMap<Badge, Integer>(Badge.class);
 		this.plugin = instance;
 	}
 
@@ -175,40 +158,6 @@ public class TregminePlayer extends PlayerDelegate {
 
 	public boolean alertedAfk() {
 		return this.alertedAfk;
-	}
-
-	public void awardBadgeLevel(Badge badge, String message) {
-		int badgeLevel = getBadgeLevel(badge) + 1;
-		badges.put(badge, badgeLevel);
-
-		if (badgeLevel == 1) {
-			sendStringMessage(ChatColor.GOLD + "Congratulations! You've been awarded " + "the " + badge.getName()
-					+ " badge of honor: " + message);
-		} else {
-			sendStringMessage(ChatColor.GOLD + "Congratulations! You've been awarded " + "the level " + ChatColor.GREEN
-					+ badgeLevel + " " + ChatColor.GOLD + badge.getName() + "badge of honor: " + message);
-		}
-	}
-
-	public boolean canMentor() {
-		if (hasFlag(TregminePlayer.Flags.SOFTWARNED) || hasFlag(TregminePlayer.Flags.HARDWARNED)) {
-
-			return false;
-		}
-
-		return getRank().canMentor();
-	}
-
-	public void setCommandStatus(CommandStatus status) {
-		this.commandstatus.add(status);
-	}
-
-	public boolean hasCommandStatus(CommandStatus status) {
-		return this.commandstatus.contains(status);
-	}
-
-	public void removeCommandStatus(CommandStatus status) {
-		this.commandstatus.remove(status);
 	}
 
 	public boolean canVS() {
@@ -269,18 +218,6 @@ public class TregminePlayer extends PlayerDelegate {
 
 	public PermissionAttachment getAttachment() {
 		return this.attachment;
-	}
-
-	public int getBadgeLevel(Badge badge) {
-		if (!hasBadge(badge)) {
-			return 0;
-		} else {
-			return badges.get(badge);
-		}
-	}
-
-	public Map<Badge, Integer> getBadges() {
-		return badges;
 	}
 
 	public int getBlessTarget() {
@@ -358,9 +295,6 @@ public class TregminePlayer extends PlayerDelegate {
 		return country;
 	}
 
-	public FishyBlock getCurrentFishyBlock() {
-		return currentFishyBlock;
-	}
 
 	public String getCurrentInventory() {
 		return currentInventory;
@@ -376,10 +310,6 @@ public class TregminePlayer extends PlayerDelegate {
 
 	public int getFillBlockCounter() {
 		return fillBlockCounter;
-	}
-
-	public int getFishyBuyCount() {
-		return fishyBuyCount;
 	}
 
 	public boolean getFrozen() {
@@ -467,10 +397,6 @@ public class TregminePlayer extends PlayerDelegate {
 		return newChunk;
 	}
 
-	public FishyBlock getNewFishyBlock() {
-		return newFishyBlock;
-	}
-
 	public Nickname getNickname() {
 		return this.nickname;
 	}
@@ -519,10 +445,6 @@ public class TregminePlayer extends PlayerDelegate {
 		return student;
 	}
 
-	public int getTargetZoneId() {
-		return targetZoneId;
-	}
-
 	public int getTimeOnline() {
 		return (int) ((new Date().getTime() - loginTime.getTime()) / 1000L);
 	}
@@ -546,19 +468,7 @@ public class TregminePlayer extends PlayerDelegate {
 	public Rank getTrueRank() {
 		return rank;
 	}
-
-	public Block getZoneBlock1() {
-		return zoneBlock1;
-	}
-
-	public Block getZoneBlock2() {
-		return zoneBlock2;
-	}
-
-	public int getZoneBlockCounter() {
-		return zoneBlockCounter;
-	}
-
+	
 	public void gotoWorld(Player player, Location loc, String success, String failure) {
 		World world = loc.getWorld();
 		Chunk chunk = world.getChunkAt(loc);
@@ -569,10 +479,6 @@ public class TregminePlayer extends PlayerDelegate {
 		} else {
 			player.sendMessage(failure);
 		}
-	}
-
-	public boolean hasBadge(Badge badge) {
-		return badges.containsKey(badge);
 	}
 
 
@@ -727,10 +633,6 @@ public class TregminePlayer extends PlayerDelegate {
 		this.attachment = ment;
 	}
 
-	public void setBadges(Map<Badge, Integer> v) {
-		this.badges = v;
-	}
-
 	public void setBlessTarget(int v) {
 		this.blessTarget = v;
 	}
@@ -754,11 +656,7 @@ public class TregminePlayer extends PlayerDelegate {
 	public void setCountry(String v) {
 		this.country = v;
 	}
-
-	public void setCurrentFishyBlock(FishyBlock v) {
-		this.currentFishyBlock = v;
-	}
-
+	
 	public void setCurrentInventory(String inv) {
 		this.currentInventory = inv;
 	}
@@ -792,10 +690,6 @@ public class TregminePlayer extends PlayerDelegate {
 
 	public void setFillBlockCounter(int v) {
 		this.fillBlockCounter = v;
-	}
-
-	public void setFishyBuyCount(int v) {
-		this.fishyBuyCount = v;
 	}
 
 	public void setFlag(Flags flag) {
@@ -850,11 +744,6 @@ public class TregminePlayer extends PlayerDelegate {
 
 	public void setNewChunk(boolean value) {
 		this.newChunk = value;
-	}
-
-	// Fishy block state
-	public void setNewFishyBlock(FishyBlock v) {
-		this.newFishyBlock = v;
 	}
 
 	public void setNick(Nickname n) {
@@ -921,10 +810,6 @@ public class TregminePlayer extends PlayerDelegate {
 		this.student = v;
 	}
 
-	public void setTargetZoneId(int v) {
-		this.targetZoneId = v;
-	}
-
 	public void setTemporaryChatName(String name) {
 		this.name = name;
 
@@ -968,19 +853,6 @@ public class TregminePlayer extends PlayerDelegate {
 
 	public void setValid(boolean v) {
 		this.valid = v;
-	}
-
-	// zones state
-	public void setZoneBlock1(Block v) {
-		this.zoneBlock1 = v;
-	}
-
-	public void setZoneBlock2(Block v) {
-		this.zoneBlock2 = v;
-	}
-
-	public void setZoneBlockCounter(int v) {
-		this.zoneBlockCounter = v;
 	}
 
 	public void showPlayer(TregminePlayer player) {

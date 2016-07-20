@@ -50,7 +50,6 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 
 import info.tregminehub.Tregmine;
-import info.tregminehub.api.Badge;
 import info.tregminehub.api.PlayerBannedException;
 import info.tregminehub.api.QuitCause;
 import info.tregminehub.api.Rank;
@@ -487,9 +486,6 @@ public class TregminePlayerListener implements Listener {
 		// Recalculate guardians
 		activateGuardians();
 
-		if (rank == Rank.DONATOR && !player.hasBadge(Badge.PHILANTROPIST)) {
-			player.awardBadgeLevel(Badge.PHILANTROPIST, "For being a Tregmine donator!");
-		}
 	}
 
 	@EventHandler

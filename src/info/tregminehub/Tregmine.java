@@ -25,7 +25,6 @@ import org.bukkit.scheduler.BukkitScheduler;
 
 import com.maxmind.geoip.LookupService;
 
-import info.tregminehub.api.BlockStats;
 import info.tregminehub.api.Lag;
 import info.tregminehub.api.PlayerBannedException;
 import info.tregminehub.api.PlayerReport;
@@ -38,9 +37,7 @@ import info.tregminehub.commands.ActionCommand;
 import info.tregminehub.commands.AfkCommand;
 import info.tregminehub.commands.AlertCommand;
 import info.tregminehub.commands.BackCommand;
-import info.tregminehub.commands.BadgeCommand;
 import info.tregminehub.commands.BanCommand;
-import info.tregminehub.commands.BlessCommand;
 import info.tregminehub.commands.BlockHereCommand;
 import info.tregminehub.commands.BrushCommand;
 import info.tregminehub.commands.ChangeNameCommand;
@@ -48,7 +45,6 @@ import info.tregminehub.commands.ChannelCommand;
 import info.tregminehub.commands.ChannelViewCommand;
 import info.tregminehub.commands.CheckBlocksCommand;
 import info.tregminehub.commands.ChunkCountCommand;
-import info.tregminehub.commands.CleanInventoryCommand;
 import info.tregminehub.commands.CreateMobCommand;
 import info.tregminehub.commands.FillCommand;
 import info.tregminehub.commands.FlyCommand;
@@ -71,10 +67,8 @@ import info.tregminehub.commands.LotteryCommand;
 import info.tregminehub.commands.MailCommand;
 import info.tregminehub.commands.MsgCommand;
 import info.tregminehub.commands.NewSpawnCommand;
-import info.tregminehub.commands.NormalCommand;
 import info.tregminehub.commands.NotifyCommand;
 import info.tregminehub.commands.NukeCommand;
-import info.tregminehub.commands.PasswordCommand;
 import info.tregminehub.commands.PositionCommand;
 import info.tregminehub.commands.PromoteCommand;
 import info.tregminehub.commands.PropertyCommand;
@@ -91,11 +85,9 @@ import info.tregminehub.commands.SendBackCommand;
 import info.tregminehub.commands.SendToCommand;
 import info.tregminehub.commands.SetBiomeCommand;
 import info.tregminehub.commands.SetSpawnerCommand;
-import info.tregminehub.commands.SkipMentorCommand;
 import info.tregminehub.commands.SpawnCommand;
 import info.tregminehub.commands.StaffHandbookCommand;
 import info.tregminehub.commands.StaffNewsCommand;
-import info.tregminehub.commands.SuicideCommand;
 import info.tregminehub.commands.SummonCommand;
 import info.tregminehub.commands.SupportCommand;
 import info.tregminehub.commands.TeleportCommand;
@@ -103,7 +95,6 @@ import info.tregminehub.commands.TeleportShieldCommand;
 import info.tregminehub.commands.TeleportToCommand;
 import info.tregminehub.commands.TimeCommand;
 import info.tregminehub.commands.TpsCommand;
-import info.tregminehub.commands.TradeCommand;
 import info.tregminehub.commands.UpdateCommand;
 import info.tregminehub.commands.VanishCommand;
 import info.tregminehub.commands.WalletCommand;
@@ -515,7 +506,6 @@ public class Tregmine extends JavaPlugin {
 		// Register all listeners
 		PluginManager pluginMgm = server.getPluginManager();
 		pluginMgm.registerEvents(new AfkListener(this), this);
-		pluginMgm.registerEvents(new BlockStats(this), this);
 		pluginMgm.registerEvents(new BoxFillBlockListener(this), this);
 		pluginMgm.registerEvents(new ChatListener(this), this);
 		pluginMgm.registerEvents(new PlayerLookupListener(this), this);
@@ -575,19 +565,15 @@ public class Tregmine extends JavaPlugin {
 		getCommand("alert").setExecutor(new AlertCommand(this));
 		getCommand("allclear").setExecutor(new CheckBlocksCommand(this));
 		getCommand("back").setExecutor(new BackCommand(this));
-		getCommand("badge").setExecutor(new BadgeCommand(this));
 		getCommand("ban").setExecutor(new BanCommand(this));
-		getCommand("bless").setExecutor(new BlessCommand(this));
 		getCommand("blockhere").setExecutor(new BlockHereCommand(this));
 		getCommand("brush").setExecutor(new BrushCommand(this));
 		getCommand("channel").setExecutor(new ChannelCommand(this));
 		getCommand("channelview").setExecutor(new ChannelViewCommand(this));
-		getCommand("clean").setExecutor(new CleanInventoryCommand(this));
 		getCommand("cname").setExecutor(new ChangeNameCommand(this));
 		getCommand("createmob").setExecutor(new CreateMobCommand(this));
 		getCommand("creative").setExecutor(new GameModeCommand(this, "creative", GameMode.CREATIVE));
 		getCommand("fill").setExecutor(new FillCommand(this, "fill"));
-		getCommand("suicide").setExecutor(new SuicideCommand(this));
 		getCommand("fly").setExecutor(new FlyCommand(this));
 		getCommand("force").setExecutor(new ForceCommand(this));
 		getCommand("forceblock").setExecutor(new ForceShieldCommand(this));
@@ -606,9 +592,7 @@ public class Tregmine extends JavaPlugin {
 		getCommand("lottery").setExecutor(new LotteryCommand(this));
 		getCommand("msg").setExecutor(new MsgCommand(this));
 		getCommand("newspawn").setExecutor(new NewSpawnCommand(this));
-		getCommand("normal").setExecutor(new NormalCommand(this));
 		getCommand("nuke").setExecutor(new NukeCommand(this));
-		getCommand("password").setExecutor(new PasswordCommand(this));
 		getCommand("pos").setExecutor(new PositionCommand(this));
 		getCommand("promote").setExecutor(new PromoteCommand(this));
 		getCommand("quitmessage").setExecutor(new QuitMessageCommand(this));
@@ -624,7 +608,6 @@ public class Tregmine extends JavaPlugin {
 		getCommand("sendto").setExecutor(new SendToCommand(this));
 		getCommand("setbiome").setExecutor(new SetBiomeCommand(this));
 		getCommand("setspawner").setExecutor(new SetSpawnerCommand(this));
-		getCommand("skipmentor").setExecutor(new SkipMentorCommand(this));
 		getCommand("spawn").setExecutor(new SpawnCommand(this));
 		getCommand("summon").setExecutor(new SummonCommand(this));
 		getCommand("support").setExecutor(new SupportCommand(this));
@@ -636,7 +619,6 @@ public class Tregmine extends JavaPlugin {
 		getCommand("ttps").setExecutor(new TpsCommand(this));
 		getCommand("tpshield").setExecutor(new TeleportShieldCommand(this));
 		getCommand("tpto").setExecutor(new TeleportToCommand(this));
-		getCommand("trade").setExecutor(new TradeCommand(this));
 		getCommand("update").setExecutor(new UpdateCommand(this));
 		getCommand("vanish").setExecutor(new VanishCommand(this));
 		getCommand("wallet").setExecutor(new WalletCommand(this));
@@ -740,7 +722,6 @@ public class Tregmine extends JavaPlugin {
 
 			IPlayerDAO playerDAO = ctx.getPlayerDAO();
 			playerDAO.updatePlayTime(player);
-			playerDAO.updateBadges(player);
 		} catch (DAOException e) {
 			throw new RuntimeException(e);
 		}

@@ -44,12 +44,6 @@ commands:
   ban:
     description: Ban the specified player
     usage: /ban player
-  badge:
-    description: All commands for badges
-    usage: /badge
-  bless:
-    description: Specify the player for which the next block will be blessed
-    usage: /bless player
   blockhere:
     description: Create a block of dirt beneath your feet (admins and builders only)
     usage: /blockhere
@@ -65,9 +59,6 @@ commands:
   channelview:
     description: View all channels whilst in one channel (admins)
     usage: /channelview <on/off>
-  clean:
-    description: Clean your inventory
-    usage: /clean
   createmob:
     description: Create mobs from empty air (admin only)
     usage: /createmob mob_type amount [name]
@@ -123,15 +114,9 @@ commands:
   newspawn:
     description: Temporarily change the spawn on this map (admin only)
     usage: /newspawn
-  normal:
-    description: Become a normal player until you sign back on (admins, guardians and builders only)
-    usage: /normal
   nuke:
     description: Kill all mobs on this map (admins and guardians only)
     usage: /nuke
-  password:
-    description: Set your password
-    usage: /password password
   pos:
     description: Prints your position to the console
     usage: /pos
@@ -181,15 +166,9 @@ commands:
   setspawner:
     description: Change a mob spawners type (admins only)
     usage: /setspawner
-  skipmentor:
-    description: Skip the unverified status of a player
-    usage: /skipmentor player
   spawn:
     description: Go back to spawn
     usage: /spawn
-  suicide:
-    description: Commit suicide
-    usage: /suicide
   summon:
     description: Summon a player to your location
     usage: /summon player
@@ -223,9 +202,6 @@ commands:
   time:
     description: Change the time of day (donators only)
     usage: /time day|night|normal
-  trade:
-    description: Trade safely
-    usage: /trade player
   update:
     description: See what was last updated!
     usage: /update [version number]

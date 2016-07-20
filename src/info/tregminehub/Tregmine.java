@@ -17,9 +17,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
-import org.bukkit.World;
-import org.bukkit.WorldCreator;
-import org.bukkit.WorldType;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
@@ -77,7 +74,6 @@ import info.tregminehub.commands.NewSpawnCommand;
 import info.tregminehub.commands.NormalCommand;
 import info.tregminehub.commands.NotifyCommand;
 import info.tregminehub.commands.NukeCommand;
-import info.tregminehub.commands.OWCommand;
 import info.tregminehub.commands.PasswordCommand;
 import info.tregminehub.commands.PositionCommand;
 import info.tregminehub.commands.PromoteCommand;
@@ -109,7 +105,6 @@ import info.tregminehub.commands.TimeCommand;
 import info.tregminehub.commands.TpsCommand;
 import info.tregminehub.commands.TradeCommand;
 import info.tregminehub.commands.UpdateCommand;
-import info.tregminehub.commands.VanillaCommand;
 import info.tregminehub.commands.VanishCommand;
 import info.tregminehub.commands.WalletCommand;
 import info.tregminehub.commands.WarnCommand;
@@ -170,29 +165,18 @@ public class Tregmine extends JavaPlugin {
 	private boolean lockdown = false;
 
 	private LookupService cl = null;
-	private boolean keywordsEnabled;
 	public Tregmine plugin;
-	public String releaseType = "re";
 	public String serverName;
-	private World vanillaWorld;
-	private World vanillaNetherWorld;
-	private World vanillaEndWorld;
 	private ChatColor[] rankcolors = new ChatColor[9];
 	FileConfiguration config;
-
-	// Special!
-	private World world2;
-	private World world2nether;
-	private World world2end;
-	private boolean secondaryworld;
+	
+	private Lag lag;
 
 	// Statistics
 	private int onlineGuards = 0;
 	private int onlineJuniors = 0;
 	private int onlineSeniors = 0;
 	private int onlineTeachers = 0;
-
-	private Lag lag = new Lag();
 
 	public void addBlockedChat(TregmineChatEvent e) {
 		this.blockedChats.add(e);
@@ -458,55 +442,12 @@ public class Tregmine extends JavaPlugin {
 		}
 	}
 
-	public World getSWorld() {
-		return this.world2;
-	}
-
-	public World getSWorldEnd() {
-		return this.world2end;
-	}
-
-	public World getSWorldNether() {
-		return this.world2nether;
-	}
-
 	// ============================================================================
 	// Player methods
 	// ============================================================================
 
 	public Tregmine getTregmine() {
 		return plugin;
-	}
-
-	public World getVanillaEnd() {
-		return vanillaEndWorld;
-	}
-
-	public World getVanillaNether() {
-		return vanillaNetherWorld;
-	}
-
-	// Interjection point for other stuff
-
-	public World getVanillaWorld() {
-		return vanillaWorld;
-	}
-
-	public boolean hasSecondaryWorld() {
-		return this.secondaryworld;
-	}
-
-	public boolean isInVanilla(TregminePlayer player) {
-		if (player.getWorld() == this.vanillaWorld || player.getWorld() == this.vanillaEndWorld
-				|| player.getWorld() == this.vanillaNetherWorld) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	public boolean keywordsEnabled() {
-		return keywordsEnabled;
 	}
 
 	public List<TregminePlayer> matchPlayer(String pattern) {
@@ -550,83 +491,10 @@ public class Tregmine extends JavaPlugin {
 
 		this.server = getServer();
 		plugin = this;
-		
+		this.lag = new Lag();
 		Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, this.lag, 100L, 1L);
 		Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Timer(this), 100L, 1L);
-		List<?> configWorlds = getConfig().getList("worlds.names");
-		if (getConfig().getString("worlds.vanillaworld") == "true") {
-			WorldCreator addWorld = new WorldCreator("vanilla");
-			addWorld.environment(World.Environment.NORMAL);
-			addWorld.generateStructures(true);
-			addWorld.type(WorldType.NORMAL);
-			this.vanillaWorld = addWorld.createWorld();
-
-			// Nether
-			WorldCreator addNether = new WorldCreator("vanilla_nether").environment(World.Environment.NETHER)
-					.type(WorldType.NORMAL);
-			this.vanillaNetherWorld = addNether.createWorld();
-
-			// End
-			WorldCreator addEnd = new WorldCreator("vanilla_the_end").environment(World.Environment.THE_END)
-					.type(WorldType.NORMAL);
-			this.vanillaEndWorld = addEnd.createWorld();
-		}
-		if (config.getBoolean("worlds.special.newworld")) {
-			WorldCreator world2g = new WorldCreator("world_2");
-			WorldCreator world2netherg = new WorldCreator("world_2_nether");
-			WorldCreator world2endg = new WorldCreator("world_2_the_end");
-			world2g.environment(World.Environment.NORMAL);
-			world2g.generateStructures(true);
-			world2g.type(WorldType.NORMAL);
-			this.world2 = world2g.createWorld();
-			world2netherg.environment(World.Environment.NETHER);
-			world2netherg.generateStructures(true);
-			world2netherg.type(WorldType.NORMAL);
-			this.world2nether = world2netherg.createWorld();
-			world2endg.environment(World.Environment.THE_END);
-			world2endg.generateStructures(true);
-			world2endg.type(WorldType.NORMAL);
-			this.world2end = world2endg.createWorld();
-			this.secondaryworld = true;
-		}
 		this.serverName = getConfig().getString("general.servername");
-		this.keywordsEnabled = getConfig().getBoolean("general.keywords");
-		if (getConfig().getString("worlds.enabled") == "true") {
-			String[] worlds = configWorlds.toArray(new String[configWorlds.size()]);
-			for (String worldName : worlds) {
-				if (worldName.contains("_the_end") || worldName.contains("_nether")) {
-					// Do nothing
-				} else {
-					WorldCreator addWorld = new WorldCreator(worldName);
-					addWorld.environment(World.Environment.NORMAL);
-					addWorld.generateStructures(false);
-					addWorld.type(WorldType.NORMAL);
-					addWorld.createWorld();
-				}
-			}
-
-			for (String worldName : worlds) {
-				if (!worldName.contains("the_end")) {
-					// Do nothing
-				} else {
-					WorldCreator addWorld = new WorldCreator(worldName);
-					addWorld.environment(World.Environment.THE_END);
-					addWorld.generateStructures(false);
-					addWorld.createWorld();
-				}
-			}
-			for (String worldName : worlds) {
-				if (!worldName.contains("nether")) {
-					// Do nothing
-				} else {
-					WorldCreator addWorld = new WorldCreator(worldName);
-					addWorld.environment(World.Environment.NETHER);
-					addWorld.generateStructures(false);
-					addWorld.createWorld();
-				}
-			}
-			LOGGER.info("" + configWorlds.size() + " extra worlds attempted to load.");
-		}
 
 		try (IContext ctx = contextFactory.createContext()) {
 			IMiscDAO miscDAO = ctx.getMiscDAO();
@@ -700,7 +568,6 @@ public class Tregmine extends JavaPlugin {
 						|| player.getRank() == Rank.SENIOR_ADMIN;
 			}
 		});
-		getCommand("taxi").setExecutor(new OWCommand(this));
 		getCommand("property").setExecutor(new PropertyCommand(this));
 		getCommand("staffbook").setExecutor(new StaffHandbookCommand(this));
 		getCommand("action").setExecutor(new ActionCommand(this));
@@ -777,7 +644,6 @@ public class Tregmine extends JavaPlugin {
 		getCommand("warn").setExecutor(new WarnCommand(this));
 		getCommand("weather").setExecutor(new WeatherCommand(this));
 		getCommand("who").setExecutor(new WhoCommand(this));
-		getCommand("vanilla").setExecutor(new VanillaCommand(this));
 		getCommand("chunkcount").setExecutor(new ChunkCountCommand(this));
 		getCommand("gamemode").setExecutor(new GameModeLegacyCommand(this));
 		

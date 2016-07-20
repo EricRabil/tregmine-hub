@@ -14,9 +14,6 @@ general:
     minefortregs: true
   #DO NOT put a / at the end of the domain
   url: http://domain.lan
-api:
-  signing-key: your-strong-random-key-here
-  port: 9192
 db:
   url: jdbc:mysql://10.10.0.5:3306/tregmine_test?autoReconnect=true
   user: server
@@ -26,17 +23,6 @@ support:
   password: will message you
   to:
     - email@emil.athisemail
-#Worlds
-worlds:
-# Set enabled to true to run the worlds API
-# Vanilla world is independent of the worlds API - Enable it to disable most of Tregmines features in a specialized vanilla world.
-  vanillaworld: false
-  special:
-    # Before setting to true, move world to world_2 as with the nether and end
-    newworld: false
-    restrictnewworldtostaff: true
-  enabled: false
-  names:
 #Rank Chat Colors
 ranks:
   colors:

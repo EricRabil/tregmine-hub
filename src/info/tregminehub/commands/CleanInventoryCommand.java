@@ -13,11 +13,6 @@ public class CleanInventoryCommand extends AbstractCommand {
 
 	@Override
 	public boolean handlePlayer(TregminePlayer player, String[] args) {
-		if (player.getWorld().getName().equalsIgnoreCase("vanilla") || player.isInVanillaWorld()) {
-			player.sendStringMessage(ChatColor.RED + "You cannot use that command in this world!");
-			return true;
-		}
-
 		if (args.length != 1 && !player.hasCommandStatus(CommandStatus.CLEAN_VERIFY)) {
 			player.sendStringMessage(ChatColor.RED + "Are you sure you want to run that command?");
 			player.sendStringMessage(ChatColor.RED + "Type /clean yes to confirm");

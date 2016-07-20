@@ -21,11 +21,6 @@ public class GameModeLegacyCommand extends AbstractCommand {
 			this.insufficientPerms(player);
 			return true;
 		}
-		if (player.isInVanillaWorld()) {
-			player.setFireTicks(30);
-			player.sendStringMessage(ChatColor.RED + "You cannot use that command in this world!");
-			return true;
-		}
 		if (args.length < 1) {
 			this.invalidArguments(player, "/gamemode <mode>");
 			return true;

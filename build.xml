@@ -51,7 +51,7 @@
     </target>
 
     <target name="jar" depends="compile">
-        <jar destfile="tregmine.jar" basedir="${build}">
+        <jar destfile="tregmine-hub.jar" basedir="${build}">
             <manifest>
                 <attribute name="Class-Path"
                     value="lib/json.jar

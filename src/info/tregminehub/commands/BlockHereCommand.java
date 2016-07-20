@@ -14,12 +14,6 @@ public class BlockHereCommand extends AbstractCommand {
 
 	@Override
 	public boolean handlePlayer(TregminePlayer player, String[] args) {
-		if (player.getWorld() == player.getPlugin().getVanillaWorld()
-				|| player.getWorld() == player.getPlugin().getVanillaNether()
-				|| player.getWorld() == player.getPlugin().getVanillaEnd()) {
-			player.sendStringMessage(ChatColor.RED + "You cannot use that command in this world!");
-			return true;
-		}
 		if (!player.getRank().canFill()) {
 			return true;
 		}

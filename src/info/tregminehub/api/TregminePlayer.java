@@ -620,15 +620,6 @@ public class TregminePlayer extends PlayerDelegate {
 		return this.hasFlag(Flags.INVISIBLE);
 	}
 
-	public boolean isInVanillaWorld() {
-		if (this.getWorld() == this.plugin.getVanillaWorld() || this.getWorld() == this.plugin.getVanillaNether()
-				|| this.getWorld() == this.plugin.getVanillaEnd()) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
 	@Override
 	public boolean isValid() {
 		return valid;

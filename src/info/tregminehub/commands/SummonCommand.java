@@ -18,10 +18,6 @@ public class SummonCommand extends AbstractCommand {
 
 	@Override
 	public boolean handlePlayer(TregminePlayer player, String[] args) {
-		if (player.getWorld().getName() == "vanilla") {
-			player.sendStringMessage(ChatColor.RED + "You cannot use that command in this world!");
-			return true;
-		}
 		if (args.length == 0) {
 			return false;
 		}
@@ -34,10 +30,6 @@ public class SummonCommand extends AbstractCommand {
 		}
 
 		TregminePlayer victim = candidates.get(0);
-		if (victim.getWorld().getName() == "vanilla") {
-			player.sendStringMessage(ChatColor.RED + "That player is in the vanilla world!");
-			return true;
-		}
 		victim.setLastPos(victim.getLocation());
 
 		// Mentors can summon their students, but nobody else. In those cases,

@@ -15,10 +15,6 @@ public class BackCommand extends AbstractCommand {
 
 	@Override
 	public boolean handlePlayer(TregminePlayer player, String[] args) {
-		if (player.getWorld().getName().equalsIgnoreCase("vanilla") || player.isInVanillaWorld()) {
-			player.sendStringMessage(ChatColor.RED + "You cannot use that command in this world!");
-			return true;
-		}
 		if (!player.getIsStaff()) {
 			player.sendStringMessage(ChatColor.RED + "You don't have the permissions to do that command.");
 			player.sendStringMessage(ChatColor.RED + "There's no going back!");

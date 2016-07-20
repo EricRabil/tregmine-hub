@@ -18,10 +18,6 @@ public class SendBackCommand extends AbstractCommand {
 
 	@Override
 	public boolean handlePlayer(TregminePlayer player, String[] args) {
-		if (player.getWorld().getName().equalsIgnoreCase("vanilla") || player.isInVanillaWorld()) {
-			player.sendStringMessage(ChatColor.RED + "You cannot use that command in this world!");
-			return true;
-		}
 		if (!player.getIsAdmin()) {
 			player.sendStringMessage(ChatColor.RED + "You don't have permission to send a player back!");
 			return true;
@@ -36,10 +32,6 @@ public class SendBackCommand extends AbstractCommand {
 			return true;
 		}
 		TregminePlayer target = players.get(0);
-		if (target.getWorld().getName().equalsIgnoreCase("vanilla") || player.isInVanillaWorld()) {
-			player.sendStringMessage(ChatColor.RED + "The player specified is in the vanilla world!");
-			return true;
-		}
 		if (target.getLastPos() == null) {
 			player.sendStringMessage(ChatColor.RED + "Player does not have a last location.");
 			return true;

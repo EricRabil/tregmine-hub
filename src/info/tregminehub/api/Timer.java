@@ -42,26 +42,6 @@ public class Timer implements Runnable {
 				}
 			}
 			try {
-				if (player.getWorld().getName().equalsIgnoreCase("vanilla")) {
-					if (player.hasFlag(Flags.FLY_ENABLED) || player.isFlying()) {
-						player.removeFlag(Flags.FLY_ENABLED);
-						player.setFlying(false);
-						TextComponent message = new TextComponent(ChatColor.RED
-								+ "You're not allowed to fly in this world, your flying has been disabled.");
-						message.setHoverEvent(
-								t.buildHover(ChatColor.RED + "The vanilla world has opted to remove flying."));
-						player.sendSpigotMessage(message);
-					}
-					if (player.getGameMode() != GameMode.SURVIVAL) {
-						player.setGameMode(GameMode.SURVIVAL);
-						TextComponent message = new TextComponent(
-								ChatColor.RED + "You must be in survival mode in this world.");
-						message.setHoverEvent(
-								t.buildHover(ChatColor.RED + "The vanilla world has opted to remove survival mode."));
-						player.sendSpigotMessage(message);
-
-					}
-				}
 				player.checkActivity();
 
 			} catch (Exception e) {

@@ -1,6 +1,6 @@
 name: TregmineHub
-main: info.tregmine.Tregmine
-version: 4.4.2
+main: info.tregminehub.Tregmine
+version: 1.0.0
 website: https://www.tregmine.com
 author: Ein Andersson, Emil Hernvall, Josh Morgan, James Sherlock, Rob Catron, Joe Notaro, Eric Rabil
 description: Tregmine Plugin
@@ -71,9 +71,6 @@ commands:
   createmob:
     description: Create mobs from empty air (admin only)
     usage: /createmob mob_type amount [name]
-  createwarp:
-    description: Create a warp at your present location (admin only)
-    usage: /createwarp warp_name
   fill:
     description: Fill, replace and copy blocks using a wooden spade (admins and builders only)
     usage: /fill
@@ -95,15 +92,9 @@ commands:
   give:
     description: Give a user an item (admin only)
     usage: /give player item amount data
-  home:
-    description: Teleport to, or set, your home
-    usage: /home
   ignore:
     description: Ignore a player (not staff)
     usage: /ignore <add/remove> <player_name> or /ignore <list>
-  inv:
-    description: Look in a players inventory (admin only)
-    usage: /inv <player>
   invlog:
     description: Toggle inventory logging display
     usage: /invlog <on/off/status>
@@ -122,15 +113,9 @@ commands:
   lockdown:
     description: Lock the server (admins only)
     usage: /lockdown on|off
-  lot:
-    description: Manage your lot
-    usage: /lot
   mail:
     description: Send mail to players, offline or online
     usage: /mail read|send|delete|total|tbt
-  mentor:
-    description: Make yourself available for mentoring (residents and above)
-    usage: /mentor queue|complete|cancel
   msg:
     description: Message another player
     usage: /msg player message
@@ -144,9 +129,6 @@ commands:
   nuke:
     description: Kill all mobs on this map (admins and guardians only)
     usage: /nuke
-  taxi:
-    description: Lets players bounce between worlds
-    usage: /taxi
   password:
     description: Set your password
     usage: /password password
@@ -187,9 +169,6 @@ commands:
   seen:
     description: Check a players last login
     usage: /seen player
-  sell:
-    description: Sell stuff to the central bank
-    usage: /sell
   sendback:
     description: Send a player to their previous location (admins only)
     usage: /sendback player
@@ -228,19 +207,6 @@ commands:
   testfill:
     description: Like fill, but with fake blocks (admins and builders only)
     usage: /testfill
-  town:
-    description: Shorthand for /zone
-    usage: /town delete \
-           /town adduser <player> <perm> \
-           /town deluser <player> \
-           /town entermsg <message> \
-           /town exitmsg <message> \
-           /town pvp <true/false> \
-           /town hostiles <true/false> \
-           /town enter <true/false> \
-           /town place <true/false> \
-           /town destroy <true/false> \
-           /town info [perm]
   tp:
     description: Teleport to a player
     usage: /tp player
@@ -275,32 +241,12 @@ commands:
   warn:
     description: Warn a user (guardian and admin only)
     usage: /warn <hard|soft> <player> <message>
-  warp:
-    description: Warp to a specified city
-    usage: /warp city
   weather:
     description: Change weather (donators only)
     usage: /weather <downfall or clear>
   who:
     description: Look up information about a player
     usage: /who <player>
-  vanilla:
-    description: Go to the vanilla world! (donators and up)
-    usage: /vanilla
-  zone:
-    description: Modify a zone
-    usage: /zone create <name> <owner> \
-           /zone delete <name> \
-           /zone adduser <name> <player> <perm> \
-           /zone deluser <name> <player> \
-           /zone entermsg <zone> <message> \
-           /zone exitmsg <zone> <message> \
-           /zone pvp <zone> <true/false> \
-           /zone hostiles <zone> <true/false> \
-           /zone enter <zone> <true/false> \
-           /zone place <zone> <true/false> \
-           /zone destroy <zone> <true/false> \
-           /zone info <name> [perm]
   lottery:
     description: Type /lottery for additional info.
     usage: /lottery
@@ -313,9 +259,6 @@ commands:
   watchchunks:
     description: Informs the player when they load new and old chunks without spam
     usage: /watchchunks on/off/status
-  webkick:
-    description: Kick <player> from web chat for 10 minutes
-    usage: /webkick <player> <message>
   chunkcount:
     description: See number of chunks in each world
     usage: /chunkcount

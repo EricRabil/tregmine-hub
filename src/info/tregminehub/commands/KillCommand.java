@@ -24,10 +24,6 @@ public class KillCommand extends AbstractCommand {
 			player.sendStringMessage(ChatColor.RED + "You do not have permission to use that command!");
 			return true;
 		}
-		if (player.getWorld().getName().equalsIgnoreCase("vanilla") || player.isInVanillaWorld()) {
-			player.sendStringMessage(ChatColor.RED + "You cannot use that command in this world!");
-			return true;
-		}
 		if (args.length != 1) {
 			player.sendStringMessage(ChatColor.RED + "Invalid arguments - Use /kill player");
 			return true;
@@ -35,19 +31,11 @@ public class KillCommand extends AbstractCommand {
 		if (!player.isOp()) {
 			player.sendStringMessage(ChatColor.RED + "You don't have permission to kill people!");
 		}
-		if (player.getWorld().getName() == "vanilla") {
-			player.sendStringMessage(ChatColor.RED + "You cannot use that command in this world!");
-			return true;
-		}
 		List<TregminePlayer> candidates = tregmine.matchPlayer(args[0]);
 		if (candidates.size() != 1) {
 			player.sendStringMessage(ChatColor.RED + "That player does not exist!");
 		}
 		TregminePlayer victim = candidates.get(0);
-		if (victim.getWorld().getName() == "vanilla") {
-			player.sendStringMessage(ChatColor.RED + "Cannot kill a player in the vanilla world!");
-			return true;
-		}
 		if (victim.getGameMode() == GameMode.CREATIVE) {
 			player.sendStringMessage(ChatColor.RED + "Cannot kill someone in creative!");
 			return true;

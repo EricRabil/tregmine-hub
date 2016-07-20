@@ -17,10 +17,6 @@ public class FreezeCommand extends AbstractCommand {
 
 	@Override
 	public boolean handlePlayer(TregminePlayer player, String[] args) {
-		if (player.isInVanillaWorld()) {
-			player.sendStringMessage(ChatColor.RED + "You cannot use that command in this world!");
-			return true;
-		}
 		if (!player.getIsAdmin()) {
 			player.sendStringMessage(ChatColor.RED + "You don't have permission to freeze players!");
 			return true;
@@ -36,11 +32,6 @@ public class FreezeCommand extends AbstractCommand {
 			return true;
 		}
 		TregminePlayer victim = victims.get(0);
-		if (player.isInVanillaWorld()) {
-			player.sendStringMessage(
-					ChatColor.RED + "You cannot freeze that player because they are in the vanilla world!");
-			return true;
-		}
 		boolean newValue = !victim.getFrozen();
 		victim.setFrozen(newValue);
 		String getState = (newValue ? "frozen" : "unfrozen");

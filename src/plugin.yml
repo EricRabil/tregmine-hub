@@ -129,9 +129,6 @@ commands:
   nuke:
     description: Kill all mobs on this map (admins and guardians only)
     usage: /nuke
-  taxi:
-    description: Lets players bounce between worlds
-    usage: /taxi
   password:
     description: Set your password
     usage: /password password
@@ -250,9 +247,6 @@ commands:
   who:
     description: Look up information about a player
     usage: /who <player>
-  vanilla:
-    description: Go to the vanilla world! (donators and up)
-    usage: /vanilla
   lottery:
     description: Type /lottery for additional info.
     usage: /lottery

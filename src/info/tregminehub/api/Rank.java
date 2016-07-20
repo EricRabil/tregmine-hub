@@ -149,11 +149,6 @@ public enum Rank {
 		return this == SENIOR_ADMIN;
 	}
 
-	public boolean canGoToVanilla() {
-		return this == DONATOR || this == GUARDIAN || this == CODER || this == BUILDER || this == JUNIOR_ADMIN
-				|| this == SENIOR_ADMIN;
-	}
-
 	public boolean canHaveHiddenNickname() {
 		return this == SENIOR_ADMIN;
 	}

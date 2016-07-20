@@ -510,8 +510,6 @@ public enum Rank {
 			return 1000;
 		} else if (this == DONATOR) {
 			return 200;
-		} else if (player.hasBadge(Badge.MERCHANT)) {
-			return 500;
 		} else {
 			return 100;
 		}

@@ -1,4 +1,4 @@
-name: tregmine
+name: TregmineHub
 main: info.tregmine.Tregmine
 version: 4.4.2
 website: https://www.tregmine.com
@@ -56,9 +56,6 @@ commands:
   brush:
     description: Create a brush
     usage: /brush <material> <radius>
-  buytool:
-    description: Buy a tool
-    usage: /buytool <lumber,vein>
   cname:
     description: Change your name and color (admin only)
     usage: /cname color new_name
@@ -171,9 +168,6 @@ commands:
   remitems:
     description: remove all items in the specified radius
     usage: /remitems radius
-  repair:
-    description: Repair special tools
-    usage: /repair
   reply:
     description: Reply to the last message you received
     usage: /reply <message>
@@ -234,9 +228,6 @@ commands:
   testfill:
     description: Like fill, but with fake blocks (admins and builders only)
     usage: /testfill
-  tool:
-    description: Spawn in Special Tools (Admin)
-    usage: /tool
   town:
     description: Shorthand for /zone
     usage: /town delete \
